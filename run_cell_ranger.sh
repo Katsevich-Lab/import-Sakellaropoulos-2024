@@ -22,7 +22,7 @@ PROCESSED_DIR="${MAIN_DIR}processed/"
 mkdir -p "$PROCESSED_DIR"
 
 # SCRACTH directory
-FASTQ_DIR=$SCRATCH_DIR/Sakellaropoulos_2024
+FASTQ_DIR=$SCRATCH_DIR/Sakellaropoulos_2024/
 mkdir -p "$FASTQ_DIR"
 
 # Check if prefetch tools are installed
