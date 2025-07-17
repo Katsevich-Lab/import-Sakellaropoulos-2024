@@ -13,11 +13,17 @@ if [ -z "$MAIN_DIR" ]; then
   exit 1
 fi
 
+# Raw directory
 RAW_DIR="${MAIN_DIR}raw/"
 mkdir -p "$RAW_DIR"
 
+# Processed directory
 PROCESSED_DIR="${MAIN_DIR}processed/"
 mkdir -p "$PROCESSED_DIR"
+
+# SCRACTH directory
+FASTQ_DIR=$SCRATCH_DIR/Sakellaropoulos_2024
+mkdir -p "$FASTQ_DIR"
 
 # Check if prefetch tools are installed
 if ! command -v prefetch &> /dev/null || ! command -v fastq-dump &> /dev/null; then
@@ -53,12 +59,12 @@ for SRR_ID in "${SRR_IDS[@]}"; do
     echo "\n=== Processing ${SRR_ID} ==="
     cd "$RAW_DIR" || exit
     prefetch $SRR_ID
-    fastq-dump --split-files "$RAW_DIR$SRR_ID" -O "$RAW_DIR$SRR_ID"
+    fastq-dump --split-files "$RAW_DIR$SRR_ID" -O "$FASTQ_DIR$SRR_ID"
     echo "${SRR_ID} Downloaded"
   fi
 
   # Rename FASTQ files to enable cellranger count
-  cd "$RAW_DIR$SRR_ID" || exit
+  cd "$FASTQ_DIR$SRR_ID" || exit
   if [ -f "${SRR_ID}_1.fastq" ]; then
     mv "${SRR_ID}_1.fastq" "${SRR_ID}_S1_L001_R1_001.fastq"
   else
@@ -82,14 +88,14 @@ for SRR_ID in "${SRR_IDS[@]}"; do
     cd "$PROCESSED_DIR" || exit
     cellranger count --id="${SRR_ID}" \
                     --transcriptome="$REFDATA_DIR" \
-                    --fastqs="${RAW_DIR}${SRR_ID}" \
+                    --fastqs="${FASTQ_DIR}${SRR_ID}" \
                     --sample="${SRR_ID}" \
                     --create-bam=false
   fi
 
   # Deleting fastq files to save space if download succeeds
   if [ -d "$PROCESSED_DIR$SRR_ID/outs" ]; then
-    rm ${RAW_DIR}${SRR_ID}/*.fastq
+    rm ${FASTQ_DIR}${SRR_ID}/*.fastq
     echo "${SRR_ID} processed"
   else
     echo "Cellranger failed for ${SRR_ID}"
