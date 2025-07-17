@@ -63,28 +63,30 @@ for SRR_ID in "${SRR_IDS[@]}"; do
     echo "${SRR_ID} Downloaded"
   fi
 
-  # Rename FASTQ files to enable cellranger count
-  cd "$FASTQ_DIR$SRR_ID" || exit
-  if [ -f "${SRR_ID}_1.fastq" ]; then
-    mv "${SRR_ID}_1.fastq" "${SRR_ID}_S1_L001_R1_001.fastq"
-  else
-    echo "Warning: ${SRR_ID}_1.fastq not found!"
-  fi
-  if [ -f "${SRR_ID}_2.fastq" ]; then
-    mv "${SRR_ID}_2.fastq" "${SRR_ID}_S1_L001_R2_001.fastq"
-  else
-    echo "Warning: ${SRR_ID}_2.fastq not found!"
-  fi
-  if [ -f "${SRR_ID}_3.fastq" ]; then
-    mv "${SRR_ID}_3.fastq" "${SRR_ID}_S1_L001_I1_001.fastq"
-  else
-    echo "Warning: ${SRR_ID}_3.fastq not found!"
-  fi
-
   # Run cellranger if necessary
   if [ -d "$PROCESSED_DIR/$SRR_ID/outs" ]; then
     echo "Skipping Processing $SRR_ID (folder exists)"
   else
+  
+    # Rename FASTQ files to enable cellranger count
+    cd "$FASTQ_DIR$SRR_ID" || exit
+    if [ -f "${SRR_ID}_1.fastq" ]; then
+      mv "${SRR_ID}_1.fastq" "${SRR_ID}_S1_L001_R1_001.fastq"
+    else
+      echo "Warning: ${SRR_ID}_1.fastq not found!"
+    fi
+    if [ -f "${SRR_ID}_2.fastq" ]; then
+      mv "${SRR_ID}_2.fastq" "${SRR_ID}_S1_L001_R2_001.fastq"
+    else
+      echo "Warning: ${SRR_ID}_2.fastq not found!"
+    fi
+    if [ -f "${SRR_ID}_3.fastq" ]; then
+      mv "${SRR_ID}_3.fastq" "${SRR_ID}_S1_L001_I1_001.fastq"
+    else
+      echo "Warning: ${SRR_ID}_3.fastq not found!"
+    fi
+    
+    # set the directory to the PROCESSED_DIR
     cd "$PROCESSED_DIR" || exit
     cellranger count --id="${SRR_ID}" \
                     --transcriptome="$REFDATA_DIR" \
