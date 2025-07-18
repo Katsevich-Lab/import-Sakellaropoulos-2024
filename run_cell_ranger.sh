@@ -3,8 +3,8 @@ SRR_IDS=(SRR25100748 SRR25100749 SRR25100750 SRR25100751)
 
 # Step 1: Setup directories and 
 # Set the main directory using .research_config
-# Extract the path to LOCAL_Sakellaropoulos_2024_RAW_DATA_DIR from .research_config
-MAIN_DIR=$(source ~/.research_config; echo $LOCAL_Sakellaropoulos_2024_RAW_DATA_DIR)
+# Extract the path to LOCAL_SAKELLAROPOULOS_2024_RAW_DATA_DIR from .research_config
+MAIN_DIR=$(source ~/.research_config; echo $LOCAL_SAKELLAROPOULOS_2024_RAW_DATA_DIR)
 mkdir -p "$MAIN_DIR"
 
 # Check if MAIN_DIR is set
